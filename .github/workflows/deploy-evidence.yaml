@@ -1,0 +1,69 @@
+name: deploy aemo evidence website
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - inventory-evidence/**/*
+            - .github/workflows/deploy-evidence.yaml
+    workflow_dispatch:
+    repository_dispatch:
+        types:
+            - webhook
+
+permissions:
+    id-token: write
+    contents: read
+env:
+    AEMOWEM_EVIDENCE_BUCKET: ${{vars.AEMOWEM_EVIDENCE_BUCKET}}
+    AEMOWEM_DATA_BUCKET: ${{vars.AEMOWEM_DATA_BUCKET}}
+    DATABASE_FILE: ${{vars.DATABASE_FILE}}
+    DISTRIBUTION_ID: ${{vars.DISTRIBUTION_ID}}
+
+jobs:
+    deploy-evidence:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Git clone the repository
+              uses: actions/checkout@v4
+
+            - name: configure aws credentials
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                  role-to-assume: ${{vars.AWS_ASSUME_ROLE}}
+                  role-session-name: github-actions
+                  aws-region: ${{vars.AWS_DEPLOY_REGION}}
+
+            - name: install dependencies
+              run: |
+                  cd inventory-evidence
+                  npm ci
+
+            - name: apply patches
+              run: |
+                  cd inventory-evidence
+                  npm run patches
+
+            - name: fetch the latest successful database version
+              run: |
+                  cd inventory-evidence
+                  export LAST_SUCCESSFUL_CODEBUILD=$(./get-latest-successful-build.sh)
+                  aws s3 cp s3://${AEMOWEM_DATA_BUCKET}/${LAST_SUCCESSFUL_CODEBUILD}/${DATABASE_FILE} sources/aemo/${DATABASE_FILE}
+
+            - name: build sources
+              run: |
+                  cd inventory-evidence
+                  npm run sources
+
+            - name: build distribution
+              run: |
+                  cd inventory-evidence
+                  npm run build
+
+            - name: copy distribution to origin bucket
+              run: |
+                  cd inventory-evidence/build
+                  aws s3 sync ./ s3://${AEMOWEM_EVIDENCE_BUCKET}
+
+            - name: Invalidate distribution
+              run: aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths "/*"

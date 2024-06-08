@@ -1,0 +1,70 @@
+name: deploy aemo inventory infra
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - inventory-scraper/**/*
+            - terraform/**/*
+            - .github/workflows/deploy-aemo-infra.yaml
+
+permissions:
+    id-token: write
+    contents: read
+env:
+    MIN_TEST_COVERAGE: ${{vars.MIN_TEST_COVERAGE}}
+    AWS_DEPLOY_REGION: ${{vars.AWS_DEPLOY_REGION}}
+    TFSTATE_BUCKET: ${{vars.TFSTATE_BUCKET}}
+    TFSTATE_KEY: ${{vars.TFSTATE_KEY}}
+    TFSTATE_REGION: ${{vars.TFSTATE_REGION}}
+    TFSTATE_DDB_TABLE: ${{vars.TFSTATE_DDB_TABLE}}
+jobs:
+    test-and-build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Git clone the repository
+              uses: actions/checkout@v4
+
+            - name: configure aws credentials
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                  role-to-assume: ${{vars.AWS_ASSUME_ROLE}}
+                  role-session-name: github-actions
+                  aws-region: ${{vars.AWS_DEPLOY_REGION}}
+
+            - name: install pants
+              run: |
+                  cd inventory-scraper
+                  ./get-pants.sh
+
+            - name: run tests
+              run: |
+                  cd inventory-scraper
+                  pants test --use-coverage ::
+                  if [ `jq '.totals.percent_covered' < dist/coverage/python/coverage.json` -lt ${MIN_TEST_COVERAGE} ]; then die "Did not meet minimum coverage requirement of ${MIN_TEST_COVERAGE}%" ; fi
+
+            - name: build lambda zip
+              run: |
+                  cd inventory-scraper
+                  pants package src/python:lambda
+
+            - name: make tf provider file
+              run: |
+                  cd terraform
+                  scripts/make-provider.sh > provider.tf
+
+            - uses: hashicorp/setup-terraform@v3
+            - name: tf init
+              run: |
+                  cd terraform
+                  terraform init
+
+            - name: tf plan
+              run: |
+                  cd terraform
+                  terraform plan -var-file=envs/ci.tfvars
+
+            - name: tf apply
+              run: |
+                  cd terraform
+                  terraform apply -auto-approve -var-file=envs/ci.tfvars

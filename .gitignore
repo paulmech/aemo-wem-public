@@ -1,0 +1,11 @@
+data/
+**/.pants.d/
+**/dist/
+**/__pycache__
+*.jsonl
+terraform/.terraform/
+terraform/envs/local*
+terraform/backends/*
+terraform/provider.tf
+**/.profile.json
+**/.venv

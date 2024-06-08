@@ -1,0 +1,24 @@
+version: 0.2
+
+phases:
+    install:
+        commands:
+            - echo "Make me install stuff eh. How abotu fetching a $DUCKDB_DOWNLOAD_URL"
+            - curl -sL $DUCKDB_DOWNLOAD_URL -o duckdb.zip
+            - unzip duckdb.zip -d duckdb
+            - ./duckdb/duckdb --version
+    build:
+        commands:
+            # download migration script
+            - aws s3 cp $MIGRATION_SCRIPT ./migration.sql
+            - ./duckdb/duckdb $DUCKDB_DATABASE_NAME < migration.sql
+            - aws s3 cp $DUCKDB_DATABASE_NAME ${S3_DUCKDB_OUTPUT_BASE}/${CODEBUILD_BUILD_NUMBER}/$DUCKDB_DATABASE_NAME
+            # kick off github action
+            - |
+                curl \
+                    --no-progress-meter \
+                    --fail-with-body \
+                    -d "{\"ref\": \"${GITHUB_BRANCH}\"}" \
+                    -H "Accept: application/vnd.github+json" \
+                    -H "Authorization: token ${GITHUB_TOKEN}" \
+                    https://api.github.com/repos/${GITHUB_REPO}/actions/workflows/${GITHUB_WORKFLOW}/dispatches

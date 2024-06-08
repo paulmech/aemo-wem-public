@@ -1,0 +1,30 @@
+{
+    "name": "aemowem-evidence",
+    "version": "0.0.1",
+    "scripts": {
+        "preinstall": "node .evidence/node-version.js",
+        "build": "evidence build",
+        "build:strict": "evidence build:strict",
+        "dev": "evidence dev --open /",
+        "test": "evidence build",
+        "sources": "evidence sources",
+        "preview": "evidence preview",
+        "patches": "for patch in `ls patches`; do patch -p0 -N < patches/$patch || true ; done"
+    },
+    "engines": {
+        "npm": ">=7.0.0",
+        "node": ">=18.0.0"
+    },
+    "type": "module",
+    "dependencies": {
+        "@evidence-dev/core-components": "^4.3.0",
+        "@evidence-dev/csv": "^1.0.8",
+        "@evidence-dev/duckdb": "^1.0.9",
+        "@evidence-dev/evidence": "^36.0.0"
+    },
+    "overrides": {
+        "jsonwebtoken": "9.0.0",
+        "trim@<0.0.3": ">0.0.3",
+        "sqlite3": "5.1.5"
+    }
+}

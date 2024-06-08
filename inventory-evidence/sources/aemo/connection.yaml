@@ -1,0 +1,5 @@
+# This file was automatically generated
+name: aemo
+type: duckdb
+options:
+  filename: aemo.duckdb

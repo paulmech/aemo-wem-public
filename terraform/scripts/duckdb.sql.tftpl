@@ -1,0 +1,17 @@
+install httpfs;
+install aws;
+load aws;
+call load_aws_credentials();
+
+create table inventories (
+    dt timestamp,
+    url varchar,
+    depth int,
+    filecount int,
+    is_directory boolean,
+    _created_at timestamp,
+    filename varchar,
+    fileurl varchar, 
+    filesize bigint);
+
+insert into inventories select * from "${s3_location}/**/*.jsonl.gz";

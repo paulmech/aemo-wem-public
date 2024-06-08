@@ -1,0 +1,17 @@
+[GLOBAL]
+pants_version = "2.20.1"
+backend_packages.add = [
+  "pants.backend.awslambda.python",
+  "pants.backend.python",
+]
+
+[python]
+interpreter_constraints = ["==3.10.*"]
+
+
+[pytest]
+args = ["-s"]
+
+
+[coverage-py]
+report = ["console","json","html"]

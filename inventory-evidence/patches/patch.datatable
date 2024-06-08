@@ -1,0 +1,22 @@
+--- _DataTable.svelte.orig	2024-06-07 12:17:23.098415404 +0800
++++ node_modules/@evidence-dev/core-components/dist/unsorted/viz/table/_DataTable.svelte	2024-06-07 12:20:06.744288195 +0800
+@@ -79,6 +79,9 @@
+ 	export let search = false;
+ 	$: search = search === 'true' || search === true;
+ 
++	export let searchWholeString = false;
++	$: searchWholeString = searchWholeString === 'true' || searchWholeString === true;
++
+ 	export let sortable = true;
+ 	$: sortable = sortable === 'true' || sortable === true;
+ 
+@@ -199,7 +202,8 @@
+ 					: row[summary.id]?.toString() ?? '';
+ 			},
+ 			keys: columnSummary?.map((d) => d.id) ?? [],
+-			threshold: 0.4
++			threshold: 0.4,
++			ignoreLocation: searchWholeString
+ 		});
+ 	}
+ 

@@ -37,6 +37,11 @@ jobs:
                   cd inventory-scraper
                   ./get-pants.sh
 
+            - name: run linter
+              run: |
+                  cd inventory-scraper
+                  pants lint ::
+
             - name: run tests
               run: |
                   cd inventory-scraper

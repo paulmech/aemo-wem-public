@@ -63,7 +63,8 @@ jobs:
             - name: copy distribution to origin bucket
               run: |
                   cd inventory-evidence/build
-                  aws s3 sync ./ s3://${AEMOWEM_EVIDENCE_BUCKET}
+                  aws s3 sync ./ s3://${AEMOWEM_EVIDENCE_BUCKET} --delete  \
+                    --cache-control max-age=3600
 
             - name: Invalidate distribution
               run: aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths "/*"

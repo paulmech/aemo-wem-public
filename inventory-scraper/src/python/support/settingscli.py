@@ -1,6 +1,5 @@
-from datetime import datetime
-from json import dumps
-from support.aemoconstants import (DEFAULT_SLEEPTIME, ACCEPTED_COMMANDS)
+from support.aemoconstants import DEFAULT_SLEEPTIME, ACCEPTED_COMMANDS
+
 
 class Settings:
     def __init__(self, args: list[str]):
@@ -16,7 +15,7 @@ class Settings:
             raise Exception("Expected python script name")
 
         if len(args) > 0:
-            self.url= args[0]
+            self.url = args[0]
             if not (self.url.startswith("http://") or self.url.startswith("https://")):
                 raise Exception(f"URL does not meet expectations: {self.url}")
             args = args[1:]
@@ -36,12 +35,14 @@ class Settings:
             if args[0].startswith("--"):
                 currentOption = args[0][2:]
                 self.options[currentOption] = []
-            elif currentOption != None:
+            elif currentOption is not None:
                 self.options[currentOption].append(args[0])
             args = args[1:]
 
-def help(): # pragma: no cover    
-    print("""
+
+def help():  # pragma: no cover
+    print(
+        """
     AEMO WEM Data Utility
     (Also known Aemo Wemdu, pronounced Mace Windu)
 
@@ -65,4 +66,5 @@ def help(): # pragma: no cover
         --start-url    <str>    - custom URL to begin from
         --no-empty-dirs         - don't return directories that didn't have any files at their relative depth
 
-        """)
+        """
+    )

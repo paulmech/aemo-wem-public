@@ -9,3 +9,4 @@ terraform/backends/*
 terraform/provider.tf
 **/.profile.json
 **/.venv
+**/*.duckdb

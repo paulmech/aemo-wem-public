@@ -27,6 +27,6 @@ variable "duckdb_download_url" {
 }
 
 variable "ssm_name_github_token" {
-  type = string
+  type    = string
   default = "/workload/aemowem/github-pat"
 }

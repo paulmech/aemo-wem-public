@@ -43,10 +43,10 @@ order by 1
 </Dropdown>
 
 <ButtonGroup name="agegroup" title="Maximum File Age">
-    <ButtonGroupItem default=true value="0" valueLabel="All ages"/>
+    <ButtonGroupItem value="0" valueLabel="All ages"/>
     <ButtonGroupItem value="003" valueLabel="3 days"/>
     <ButtonGroupItem value="010" valueLabel="10 days"/>
-    <ButtonGroupItem value="030" valueLabel="1 month"/>
+    <ButtonGroupItem default=true value="030" valueLabel="1 month"/>
     <ButtonGroupItem value="090" valueLabel="3 months"/>
 </ButtonGroup>
 

@@ -31,8 +31,9 @@ select dt from years_active order by 1
     title="Show files beginning from the selected year"
 />
 
-<LineChart data={filesbyday}>
-  <ReferenceLine x=2023-10-01 label="SCED Go-Live Date" hideValue="true"/>
+<LineChart data={filesbyday} >
+
+<ReferenceLine x=2023-10-01 label="SCED Go-Live Date" hideValue="true"/>
 </LineChart>
 
 ```sql filesbyday

@@ -29,21 +29,21 @@ resource "aws_codebuild_project" "duckdb_maker" {
       value = "s3://${aws_s3_bucket.aemowem_data_bucket.id}/${local.aemowem_inventory_prefix_duckdb}"
     }
     environment_variable {
-      name = "GITHUB_REPO"
+      name  = "GITHUB_REPO"
       value = "paulmech/aemo-wem"
     }
     environment_variable {
-      name = "GITHUB_WORKFLOW"
+      name  = "GITHUB_WORKFLOW"
       value = "deploy-evidence.yaml"
     }
     environment_variable {
-      name = "GITHUB_BRANCH"
+      name  = "GITHUB_BRANCH"
       value = "main"
     }
     environment_variable {
-      name = "GITHUB_TOKEN"
-      value = "${var.ssm_name_github_token}"
-      type = "PARAMETER_STORE"
+      name  = "GITHUB_TOKEN"
+      value = var.ssm_name_github_token
+      type  = "PARAMETER_STORE"
     }
   }
 }
@@ -52,7 +52,6 @@ resource "aws_s3_object" "migration_script" {
   bucket  = aws_s3_bucket.aemowem_data_bucket.id
   key     = local.migration_script_location_key
   content = templatefile("scripts/duckdb.sql.tftpl", { s3_location = "s3://${aws_s3_bucket.aemowem_data_bucket.id}/${local.aemowem_inventory_prefix_jsonl}" })
-  etag    = filemd5("scripts/duckdb.sql.tftpl")
 }
 
 data "aws_iam_policy_document" "codebuild_assume_role" {
@@ -116,12 +115,12 @@ data "aws_iam_policy_document" "codebuild_policy" {
   }
 
   statement {
-    sid = "AllowSSMGetParameter"
-    effect = "Allow"
+    sid     = "AllowSSMGetParameter"
+    effect  = "Allow"
     actions = ["ssm:GetParameter*"]
     resources = [
       "arn:aws:ssm:${local.region}:${local.account_id}:parameter${var.ssm_name_github_token}"
-    ] 
+    ]
   }
 }
 

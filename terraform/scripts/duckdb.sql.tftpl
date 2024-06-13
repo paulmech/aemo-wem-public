@@ -14,4 +14,14 @@ create table inventories (
     fileurl varchar, 
     filesize bigint);
 
-insert into inventories select * from "${s3_location}/**/*.jsonl.gz";
+insert into inventories select 
+    dt,
+    url,
+    depth,
+    filecount,
+    is_directory,
+    _created_at,
+    filename,
+    fileurl,
+    filesize
+ from "${s3_location}/**/*.jsonl.gz";

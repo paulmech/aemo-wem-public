@@ -1,5 +1,5 @@
 ---
-title: Inventory of AEMO Wholesale Electricity Market (WEM) data files
+title: Inventory Overview
 description: |
     A brief analysis of the files and folders publicly available on https://data.wa.aemo.com.au/public/ -
     The public datasets for the Wholesale Electricity Market of Western Australia's South West Interconnected System (SWIS)
@@ -9,6 +9,7 @@ og:
         A brief analysis of the files and folders publicly available on https://data.wa.aemo.com.au/public/ -
         The public datasets for the Wholesale Electricity Market of Western Australia's South West Interconnected System (SWIS).
         OpenGraph image courtesy of @hharritt on Unsplash
+sidebar_position: 1
 ---
 
 This page visualises metadata about the data files stored at [https://data.wa.aemo.com.au/public/](https://data.wa.aemo.com.au/public/)
@@ -21,7 +22,7 @@ The following gives an indication of last time of update for all files found;
 you can filter the starting year using the dropdown box below.
 
 ```sql years_active
-select dt from years_active order by 1
+select dt from years_active
 ```
 
 <Dropdown
@@ -29,6 +30,7 @@ select dt from years_active order by 1
     name=years_active_since
     value=dt
     title="Show files beginning from the selected year"
+    order="dt desc"
 />
 
 <LineChart data={filesbyday} >
@@ -138,10 +140,10 @@ order by dt desc
 rowNumbers=true
 rowShading=true  
  search=true
-Column=Filename
-link=fileurl
 rows=20
-searchWholeString=true/>
+searchWholeString=true>
+<Column id="fileurl" linkLabel="Filename" contentType="link" openInNewTab=true/>
+</DataTable>
 
 Click on any of the table entries above to download the listed file.
 

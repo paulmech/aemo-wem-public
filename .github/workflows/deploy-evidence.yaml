@@ -58,7 +58,7 @@ jobs:
             - name: build distribution
               run: |
                   cd inventory-evidence
-                  npm run build
+                  NODE_OPTIONS=--max-old-space-size=8192 npm run build
 
             - name: copy distribution to origin bucket
               run: |

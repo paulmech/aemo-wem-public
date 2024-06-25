@@ -1,5 +1,5 @@
 ---
-title: Full Inventory of Data Files
+title: Complete Data File Inventory
 og:
     title: Searchable Inventory of AEMO WEM Data Files
     description: |
@@ -8,6 +8,7 @@ og:
         Single click download, direct from AEMO WEM data site. OpenGraph image courtesy of 
         @brett_jordan on Unsplash
     image: /og/brett-jordan-7vxlppVfh8M-unsplash.jpg
+sidebar_position: 2
 ---
 
 ```sql distincturl
@@ -88,7 +89,7 @@ WITH basics AS (
 SELECT
  fileurl,
  REPLACE(fileurl,'https://data.wa.aemo.com.au/public','') shortUrl,
- filesize/1024/1024 "filesize_(Mb)",
+ filesize/1024/1024 "filesize",
  cast(age(dt) as varchar) "age"
  FROM basics
   WHERE
@@ -99,8 +100,8 @@ SELECT
 
 ```
 
-<DataTable link=fileurl search=true searchWholeString=true data={fullinventory} rows=15>
-    <Column id=fileurl contentType=link linkLabel=shortUrl wrap=true/>
-    <Column id="filesize_(Mb)" wrap=true fmt='#,###.#'/>
+<DataTable showNoResults=true search=true searchWholeString=true data={fullinventory} rows=15>
+    <Column id=fileurl contentType=link linkLabel=shortUrl openInNewTab=true wrap=true/>
+    <Column id="filesize" wrap=true fmt='0.0 "Mb"'/>
     <Column id="age" wrap=true/>
 </DataTable>

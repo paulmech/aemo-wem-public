@@ -9,7 +9,7 @@
         "test": "evidence build",
         "sources": "evidence sources",
         "preview": "evidence preview",
-        "patches": "for patch in `ls patches`; do patch -p0 -N < patches/$patch || true ; done"
+        "patches": "for patch in `ls patches`; do patch -p0 -N < patches/$patch ; done"
     },
     "engines": {
         "npm": ">=7.0.0",
@@ -20,7 +20,7 @@
         "@evidence-dev/core-components": "^4.5.0",
         "@evidence-dev/csv": "^1.0.8",
         "@evidence-dev/duckdb": "^1.0.9",
-        "@evidence-dev/evidence": "^38.0.0"
+        "@evidence-dev/evidence": "^38.0.1"
     },
     "overrides": {
         "jsonwebtoken": "9.0.0",

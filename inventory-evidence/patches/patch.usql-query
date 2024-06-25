@@ -1,0 +1,16 @@
+--- Query.js	2024-06-25 12:04:38.719350591 +0800
++++ node_modules/@evidence-dev/sdk/src/usql/query/Query.js	2024-06-25 12:05:00.343798292 +0800
+@@ -1190,12 +1190,11 @@
+ 		const statements = cols
+ 			.map((col) => {
+ 				const exactMatch = taggedSql`CASE WHEN lower("${col.trim()}") = lower('${escapedSearchTerm}') THEN 2 ELSE 0 END`;
+-				const similarity = taggedSql`jaccard(lower('${escapedSearchTerm}'), lower("${col}"))`;
+ 				const exactSubMatch =
+ 					// escapedSearchTerm.length >= 4
+ 					taggedSql`CASE WHEN lower("${col.trim()}") LIKE lower('%${escapedSearchTerm.split(' ').join('%')}%') THEN 1 ELSE 0 END`;
+ 				// : taggedSql`0`;
+-				return taggedSql`GREATEST((${exactMatch}), (${similarity}), (${exactSubMatch}))`;
++				return taggedSql`GREATEST((${exactMatch}), (${exactSubMatch}))`;
+ 			})
+ 			.join(',');
+ 
